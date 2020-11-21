@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "566826006453",
+    "firebase_url": "https://pharmacy-storeroom.firebaseio.com",
+    "project_id": "pharmacy-storeroom",
+    "storage_bucket": "pharmacy-storeroom.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566826006453:android:0238917fec2589f4450bfc",
+        "android_client_info": {
+          "package_name": "com.example.pharmacy_storeroom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "566826006453-tdrfikgceo88lfs3d81ggidqnodrr8ms.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcg2pWb4pv568EyFApXGBr5Le_i-nUI3Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "566826006453-tdrfikgceo88lfs3d81ggidqnodrr8ms.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
