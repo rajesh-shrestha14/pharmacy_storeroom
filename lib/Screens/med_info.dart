@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pharmacy_storeroom/Model/medicine.dart';
 import 'package:pharmacy_storeroom/myWidgets/drawer.dart';
 import 'package:pharmacy_storeroom/myWidgets/dropdown_menu.dart';
+import 'package:pharmacy_storeroom/myWidgets/medicine_info_box_in_medicine_info.dart';
 
 //import 'dart:core';
 class MedInfo extends StatefulWidget {
@@ -45,6 +48,23 @@ class _MedInfoState extends State<MedInfo> {
         children: _buildCells(count, array),
       ),
     );
+  }
+
+  Stream allStream =
+      FirebaseFirestore.instance.collection('medicine').snapshots();
+  Stream pcStream = FirebaseFirestore.instance
+      .collection('medicine')
+      .where('department', isEqualTo: 'Pharmacy Counter')
+      .snapshots();
+  Stream damagedStream = FirebaseFirestore.instance
+      .collection('medicine')
+      .where('department', isEqualTo: 'Damaged & Expiry')
+      .snapshots();
+  Stream myStream;
+  @override
+  void initState() {
+    myStream = allStream;
+    super.initState();
   }
 
   @override
@@ -92,25 +112,32 @@ class _MedInfoState extends State<MedInfo> {
                 height: size.height * 0.05,
               ),
               Flexible(
-                child: SingleChildScrollView(
-                  child: Row(
-                    //crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: _buildCells(_list.length, _list),
-                      ),
-                      // Flexible(
-                      //   child: SingleChildScrollView(
-                      //     scrollDirection: Axis.horizontal,
-                      //     child: Column(
-                      //       crossAxisAlignment: CrossAxisAlignment.start,
-                      //       children: _buildRows(20),
-                      //     ),
-                      //   ),
-                      // )
-                    ],
-                  ),
+                child: StreamBuilder(
+                  stream: myStream,
+                  builder: (_, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Something Went Wrong!!'),
+                      );
+                    } else {
+                      return ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          DocumentSnapshot medicine =
+                              snapshot.data.documents[index];
+                          return MedicineInfoBoxInMedicineInfo(
+                            medicine: MedicineModel.fromJason(medicine.data()),
+                          );
+                        },
+                      );
+                    }
+                  },
                 ),
               ),
               Divider(),
@@ -122,7 +149,11 @@ class _MedInfoState extends State<MedInfo> {
                     "Medicine info in damaged department",
                     style: TextStyle(color: CupertinoColors.white),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      myStream = damagedStream;
+                    });
+                  },
                 ),
               ),
               Container(
@@ -133,7 +164,26 @@ class _MedInfoState extends State<MedInfo> {
                     "Medicine info in pharmacy counter",
                     style: TextStyle(color: CupertinoColors.white),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      myStream = pcStream;
+                    });
+                  },
+                ),
+              ),
+              Container(
+                width: size.width * 0.7,
+                child: RaisedButton(
+                  color: CupertinoColors.activeBlue,
+                  child: Text(
+                    "All Medicine",
+                    style: TextStyle(color: CupertinoColors.white),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      myStream = allStream;
+                    });
+                  },
                 ),
               ),
             ],

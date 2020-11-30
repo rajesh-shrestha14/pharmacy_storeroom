@@ -13,7 +13,7 @@ class TableBuilder {
         ),
         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.015),
         //alignment: Alignment.centerLeft,
-        width: MediaQuery.of(context).size.width * 0.4,
+        width: MediaQuery.of(context).size.width * 0.19,
         //color: Colors.white,
         margin: EdgeInsets.all(4.0),
         child: Center(child: Text(array[index], style: TextStyle())),

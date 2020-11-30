@@ -10,9 +10,8 @@ class AppUser {
       phoneNumber,
       imageURL,
       username,
-      userType,
-      createdAt,
-      updatedAt;
+      userType;
+  DateTime createdAt, updatedAt;
 
   AppUser({
     this.uId,
@@ -30,7 +29,7 @@ class AppUser {
   });
 
   Map<String, dynamic> toJason() => {
-        'fistName': firstName,
+        'firstName': firstName,
         'lastName': lastName,
         'address': address,
         'username': username,

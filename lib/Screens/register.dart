@@ -73,50 +73,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
   //registered on pressed
   Future<void> registerUser(contexts) async {
     //TODO : transactions unhandled, currentUser not used in firebaseAuth, Provider not used for state management
-    //first get the url of the image stored in firestore
-    DialogService().forRegistration(contexts);
     String url = await uploadImage(_image);
 
-    // populating user detail
+    // populating user detail, uId is updated in next phase
     AppUser newUser = new AppUser(
-        //TODO
-        uId: '',
-        email: _email.text,
-        firstName: _firstName.text,
-        lastName: _lastName.text,
-        address: _address.text,
-        position: _position.text,
-        phoneNumber: _phoneNo.text,
-        imageURL: url,
-        username: _usernameC.text,
-        userType: _selectedUserType);
+      uId: '',
+      email: _email.text,
+      firstName: _firstName.text,
+      lastName: _lastName.text,
+      address: _address.text,
+      position: _position.text,
+      phoneNumber: _phoneNo.text,
+      imageURL: url,
+      username: _usernameC.text,
+      userType: _selectedUserType,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
 
     //signing up user / registering
     // it will auto update database
-    await AuthService().register(newUser, _passwordC.text);
-    await Navigator.pop(contexts);
-    afterRegistration(contexts);
+    await AuthService()
+        .register(newUser, _passwordC.text)
+        .then((value) => afterRegistration(contexts))
+        .catchError((Exception exception) {
+      DialogService().forRegistrationError(contexts);
+    });
   }
 
   Future<void> afterRegistration(context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //then check shared prefs whether user is logged in or not
-    String uId = await prefs.get('userId');
-    if (uId != null && uId.length > 0) {
-      //if user is successfully logged in
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (BuildContext context) => LogInScreen()),
-        (Route<dynamic> route) => route is LogInScreen,
-      );
-      DialogService().forRegistrationSuccess(context);
-    }
-    //if there is issues in logging in
-    else {
-      Navigator.pop(context);
-      DialogService().forRegistrationError(context);
-    }
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) => LogInScreen()),
+      (Route<dynamic> route) => route is LogInScreen,
+    );
   }
 
   @override
@@ -339,9 +329,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ],
                         ),
                       ),
-                      //third row
-
-                      //forth
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -369,17 +356,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             FocusScope.of(context).unfocus();
                             if (_formKey.currentState.validate())
                               registerUser(context);
-                            // final snackBar = SnackBar(
-                            //   content: Text('Registered Successfully'),
-                            //   action: SnackBarAction(
-                            //     label: 'Ok',
-                            //     onPressed: () {
-                            //       // Some code to undo the change.
-                            //     },
-                            //   ),
-                            // );
-                            //
-                            // _scaffoldState.currentState.showSnackBar(snackBar);
                           },
                           child: Text(
                             'Register New User',

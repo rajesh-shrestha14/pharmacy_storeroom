@@ -1,6 +1,43 @@
 import 'package:flutter/material.dart';
 
 class DialogService {
+  addedToDatabase({BuildContext context, String title, String message}) {
+    var dialog = AlertDialog(
+      title: Center(child: Text(title)),
+      content: Text(
+        message,
+        textAlign: TextAlign.center,
+      ),
+    );
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return dialog;
+        });
+  }
+
+  addingToDatabase({BuildContext context, String message}) async {
+    SimpleDialog dialog = SimpleDialog(
+      children: [
+        Row(
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.03,
+            ),
+            CircularProgressIndicator(),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.03,
+            ),
+            Text(message)
+          ],
+        ),
+      ],
+    );
+    showDialog(context: context, builder: (_) => dialog);
+    await Future.delayed(Duration(seconds: 4));
+    Navigator.pop(context);
+  }
+
   forLogInError(BuildContext context) {
     showDialog(
         context: context,
@@ -41,7 +78,7 @@ class DialogService {
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.03,
             ),
-            Text("Registering Use...")
+            Text("Registering User...")
           ],
         ),
       ],

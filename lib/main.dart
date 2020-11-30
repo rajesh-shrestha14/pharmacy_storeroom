@@ -1,7 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:pharmacy_storeroom/Screens/add_medicine.dart';
+import 'package:pharmacy_storeroom/Screens/add_notice.dart';
+import 'package:pharmacy_storeroom/Screens/added_medicine.dart';
 import 'package:pharmacy_storeroom/Screens/dashboard.dart';
 import 'package:pharmacy_storeroom/Screens/loginScreen.dart';
+import 'package:pharmacy_storeroom/Screens/med_info.dart';
 import 'package:pharmacy_storeroom/Screens/register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -69,14 +73,15 @@ class _AppState extends State<App> {
             debugShowCheckedModeBanner: false,
             theme: ThemeData(),
             title: 'Pharmacy Storeroom',
-            home: loggedIn ? Dashboard() : LogInScreen(),
+            home: //loggedIn ? Dashboard() : LogInScreen(),
+                Dashboard(),
           );
         }
 
         // Otherwise, show something whilst waiting for initialization to complete
         return Container(
           child: Center(
-            child: Text('Loading ...'),
+            child: Container(child: CircularProgressIndicator()),
           ),
         );
       },

@@ -1,17 +1,60 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pharmacy_storeroom/Model/notice.dart';
+import 'package:pharmacy_storeroom/Screens/add_medicine.dart';
+import 'package:pharmacy_storeroom/Services/database_service.dart';
+import 'package:pharmacy_storeroom/Services/get_from_shared_preference.dart';
+import 'package:pharmacy_storeroom/Services/show_dialogue.dart';
 import 'package:pharmacy_storeroom/Services/table_builder.dart';
 import 'package:pharmacy_storeroom/myWidgets/drawer.dart';
 import 'package:pharmacy_storeroom/myWidgets/dropdown_menu.dart';
+import 'package:pharmacy_storeroom/myWidgets/notice_box.dart';
 
-class AddNotice extends StatelessWidget {
-  final _formKey = GlobalKey<FormState>();
+class AddNotice extends StatefulWidget {
+  //for table
+  @override
+  _AddNoticeState createState() => _AddNoticeState();
+}
+
+class _AddNoticeState extends State<AddNotice> {
   List<String> array = [
     'Subject',
     'Description',
     'Update Notice Info',
     'Delete'
   ];
+
+  TextEditingController _subject = TextEditingController();
+
+  TextEditingController _description = TextEditingController();
+
+  _addNotice(BuildContext context) async {
+    //getting uid from shared pref
+    String uId = await FromSharedPref().getString('userId');
+    //initializing notice
+    NoticeModel newNotice = NoticeModel(
+      noticeId: uId,
+      description: _description.text,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      subject: _subject.text,
+    );
+    await DatabaseService().noticeToDatabase(newNotice, context);
+    Navigator.pop(context);
+    DialogService().addedToDatabase(
+        context: context,
+        message: 'Notice added successfully',
+        title: 'Success !');
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) => AddNotice()),
+      (Route<dynamic> route) => route is AddNotice,
+    );
+  }
+
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -81,6 +124,7 @@ class AddNotice extends StatelessWidget {
                       child: Column(
                         children: [
                           TextFormField(
+                            controller: _subject,
                             decoration: const InputDecoration(
                               labelText: 'Subject',
                               hintText: 'Subject',
@@ -93,6 +137,7 @@ class AddNotice extends StatelessWidget {
                             },
                           ),
                           TextFormField(
+                            controller: _description,
                             maxLines: 3,
                             decoration: const InputDecoration(
                               labelText: 'Description',
@@ -118,7 +163,7 @@ class AddNotice extends StatelessWidget {
                               // otherwise.
                               if (_formKey.currentState.validate()) {
                                 // If the form is valid, display a Snackbar.
-
+                                _addNotice(context);
                               }
                             },
                             icon: Icon(
@@ -133,14 +178,40 @@ class AddNotice extends StatelessWidget {
                             ),
                           ),
                           Flexible(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: TableBuilder().buildCells(
-                                    array.length, array, context,
-                                    color: Colors.grey),
-                              ),
+                            child: StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection('notice')
+                                  .snapshots(),
+                              builder: (_, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                } else if (snapshot.hasError) {
+                                  return Center(
+                                    child: Text('Something Went Wrong!!'),
+                                  );
+                                } else {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Center(
+                                      child: Text('No Notice Available'),
+                                    );
+                                  }
+                                  return ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    itemCount: snapshot.data.documents.length,
+                                    itemBuilder: (context, index) {
+                                      DocumentSnapshot notice =
+                                          snapshot.data.documents[index];
+                                      return NoticeBox(
+                                        notice:
+                                            NoticeModel.fromJson(notice.data()),
+                                      );
+                                    },
+                                  );
+                                }
+                              },
                             ),
                           ),
                         ],

@@ -100,8 +100,19 @@ class UserProfile extends StatelessWidget {
                         child: Form(
                           key: _formKey,
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              UserAccountsDrawerHeader(
+                                accountName: Text("Rajesh Shrestha"),
+                                accountEmail: Text("nastyrajesh@gmail.com"),
+                                currentAccountPicture: CircleAvatar(
+                                  backgroundColor: Colors.orange,
+                                  child: Text(
+                                    "A",
+                                    style: TextStyle(fontSize: 40.0),
+                                  ),
+                                ),
+                              ),
                               SizedBox(
                                 height: size.height * 0.01,
                               ),

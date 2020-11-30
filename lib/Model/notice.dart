@@ -1,25 +1,31 @@
 import 'dart:convert';
 
-class Notice {
-  String uId, description, subject, createdAt, updateedAt;
+import 'package:pharmacy_storeroom/Services/get_from_shared_preference.dart';
 
-  Notice(this.uId, this.description, this.subject, this.createdAt,
-      this.updateedAt);
+class NoticeModel {
+  String noticeId, description, subject;
+  DateTime createdAt, updatedAt;
+  NoticeModel(
+      {this.noticeId,
+      this.description,
+      this.subject,
+      this.createdAt,
+      this.updatedAt});
 
-  Notice.fromJson(Map<String, dynamic> notice) {
-    uId = notice['uId'];
+  NoticeModel.fromJson(Map<String, dynamic> notice) {
+    noticeId = notice['noticeId'];
     description = notice['description'];
     subject = notice['subject'];
-    createdAt = notice['createdAt'];
-    updateedAt = notice['updatedAt'];
+    createdAt = notice['createdAt'].toDate();
+    updatedAt = notice['updatedAt'].toDate();
   }
   Map<String, dynamic> toJason() {
     return {
-      "uId": uId,
+      "noticeId": noticeId,
       "description": description,
       "subject": subject,
       "createdAt": createdAt,
-      "updatedAt": updateedAt,
+      "updatedAt": updatedAt,
     };
   }
 }

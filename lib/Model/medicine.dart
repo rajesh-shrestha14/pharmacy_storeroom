@@ -1,27 +1,24 @@
 import 'package:flutter/rendering.dart';
 
-class Medicine {
+class MedicineModel {
   String mId,
       mName,
-      mMandate,
-      mExpdate,
       mBatch,
-      mQuantity,
       mIssueBy,
       mSupplier,
       mSuppAddress,
       mSuppContact,
       department,
-      uId,
-      createdAt,
-      updatedAt;
-  int mPrice;
+      uId;
+  double mQuantity;
+  double mPrice;
+  DateTime mManDate, createdAt, updatedAt, mExpDate;
 
-  Medicine(
+  MedicineModel(
       {this.mId,
       this.mName,
-      this.mMandate,
-      this.mExpdate,
+      this.mManDate,
+      this.mExpDate,
       this.mBatch,
       this.mQuantity,
       this.mIssueBy,
@@ -38,8 +35,8 @@ class Medicine {
     return {
       "id": mId,
       "name": mName,
-      "manDate": mMandate,
-      "expDate": mExpdate,
+      "manDate": mManDate,
+      "expDate": mExpDate,
       "batch": mBatch,
       "quantity": mQuantity,
       "issueBy": mIssueBy,
@@ -50,14 +47,15 @@ class Medicine {
       "userId": uId,
       "createdAt": createdAt,
       "updatedAt": updatedAt,
+      "price": mPrice,
     };
   }
 
-  Medicine.fromJason(Map<String, dynamic> medicine) {
+  MedicineModel.fromJason(Map<String, dynamic> medicine) {
     mId = medicine['id'];
     mName = medicine['name'];
-    mMandate = medicine['manDate'];
-    mExpdate = medicine['expDate'];
+    mManDate = medicine['manDate'].toDate();
+    mExpDate = medicine['expDate'].toDate();
     mBatch = medicine['batch'];
     mQuantity = medicine['quantity'];
     mIssueBy = medicine['issueBy'];
@@ -66,7 +64,8 @@ class Medicine {
     mSuppContact = medicine['suppContact'];
     department = medicine['department'];
     uId = medicine['userId'];
-    createdAt = medicine['createdAt'];
-    updatedAt = medicine['updatedAt'];
+    createdAt = medicine['createdAt'].toDate();
+    updatedAt = medicine['updatedAt'].toDate();
+    mPrice = medicine['price'];
   }
 }
