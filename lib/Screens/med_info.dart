@@ -111,7 +111,8 @@ class _MedInfoState extends State<MedInfo> {
               SizedBox(
                 height: size.height * 0.05,
               ),
-              Flexible(
+              Container(
+                height: size.height * 0.5,
                 child: StreamBuilder(
                   stream: myStream,
                   builder: (_, snapshot) {

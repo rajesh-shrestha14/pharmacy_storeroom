@@ -7,6 +7,7 @@ import 'package:pharmacy_storeroom/Screens/dashboard.dart';
 import 'package:pharmacy_storeroom/Screens/loginScreen.dart';
 import 'package:pharmacy_storeroom/Screens/med_info.dart';
 import 'package:pharmacy_storeroom/Screens/register.dart';
+import 'package:pharmacy_storeroom/Screens/user_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -73,8 +74,7 @@ class _AppState extends State<App> {
             debugShowCheckedModeBanner: false,
             theme: ThemeData(),
             title: 'Pharmacy Storeroom',
-            home: //loggedIn ? Dashboard() : LogInScreen(),
-                Dashboard(),
+            home: loggedIn ? Dashboard() : LogInScreen(),
           );
         }
 

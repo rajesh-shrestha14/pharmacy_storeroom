@@ -86,6 +86,16 @@ class DatabaseService {
     }
   }
 
+  Future<void> updateUser(AppUser user) async {
+    try {
+      await ref.collection('users').doc(user.uId).update(user.toJason());
+      return;
+    } on Exception catch (e) {
+      print(
+          "=========================failed to add data to firestore with e: $e=================");
+    }
+  }
+
   Future<void> noticeFromDatabase() {
     //TODO
   }

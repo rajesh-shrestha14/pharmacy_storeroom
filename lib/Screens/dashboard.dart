@@ -80,60 +80,58 @@ class Dashboard extends StatelessWidget {
                 ),
                 Container(
                   height: size.height * 0.15,
-                  child: Expanded(
-                    child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('medicine')
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Center(
-                            child: Text('Something Went Wrong!!'),
-                          );
-                        } else {
-                          return ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: snapshot.data.documents.length,
-                            itemBuilder: (context, index) {
-                              DocumentSnapshot medicine =
-                                  snapshot.data.documents[index];
-                              MedicineModel medicineModel =
-                                  MedicineModel.fromJason(medicine.data());
-                              int diff = medicineModel.mExpDate
-                                  .difference(DateTime.now())
-                                  .inDays;
-                              if (diff < 60 && diff > 0) {
-                                return Padding(
-                                  padding:
-                                      EdgeInsets.only(top: size.height * 0.02),
-                                  child: Text(
-                                      "\'${medicineModel.mName}\' expires at $diff day(s)"),
-                                );
-                              } else if (diff < 0)
-                                return Padding(
-                                  padding:
-                                      EdgeInsets.only(top: size.height * 0.02),
-                                  child: Text(
-                                      "\'${medicineModel.mName}\' expired ${-1 * diff} day(s) ago"),
-                                );
-                              else if (diff == 0)
-                                return Padding(
-                                  padding:
-                                      EdgeInsets.only(top: size.height * 0.02),
-                                  child: Text(
-                                      "\'${medicineModel.mName}\' will expire today"),
-                                );
-                              return Container();
-                            },
-                          );
-                        }
-                      },
-                    ),
+                  child: StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection('medicine')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Something Went Wrong!!'),
+                        );
+                      } else {
+                        return ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (context, index) {
+                            DocumentSnapshot medicine =
+                                snapshot.data.documents[index];
+                            MedicineModel medicineModel =
+                                MedicineModel.fromJason(medicine.data());
+                            int diff = medicineModel.mExpDate
+                                .difference(DateTime.now())
+                                .inDays;
+                            if (diff < 60 && diff > 0) {
+                              return Padding(
+                                padding:
+                                    EdgeInsets.only(top: size.height * 0.02),
+                                child: Text(
+                                    "\'${medicineModel.mName}\' expires at $diff day(s)"),
+                              );
+                            } else if (diff < 0)
+                              return Padding(
+                                padding:
+                                    EdgeInsets.only(top: size.height * 0.02),
+                                child: Text(
+                                    "\'${medicineModel.mName}\' expired ${-1 * diff} day(s) ago"),
+                              );
+                            else if (diff == 0)
+                              return Padding(
+                                padding:
+                                    EdgeInsets.only(top: size.height * 0.02),
+                                child: Text(
+                                    "\'${medicineModel.mName}\' will expire today"),
+                              );
+                            return Container();
+                          },
+                        );
+                      }
+                    },
                   ),
                 ),
                 SizedBox(
@@ -157,12 +155,22 @@ class Dashboard extends StatelessWidget {
                         );
                       }
                       double expense = 0;
+                      double priceOfDamageMedicine = 0;
+                      double totalDamagedMedicine = 0;
                       for (int i = 0; i < snapshot.data.documents.length; i++) {
                         expense +=
                             snapshot.data.documents[i]['price'].toDouble();
+                        if (snapshot.data.documents[i]['department'] ==
+                            'Damaged & Expiry') {
+                          priceOfDamageMedicine +=
+                              snapshot.data.documents[i]['price'];
+                          totalDamagedMedicine +=
+                              snapshot.data.documents[i]['quantity'];
+                        }
                       }
                       return Container(
-                        padding: EdgeInsets.only(left: 15.0),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: size.width * 0.03),
                         alignment: Alignment.centerLeft,
                         height: size.height * 0.2,
                         width: size.width,
@@ -187,6 +195,7 @@ class Dashboard extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
+                                Spacer(),
                                 Icon(
                                   Icons.attach_money,
                                   color: Colors.blue,
@@ -202,20 +211,24 @@ class Dashboard extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
+                                Spacer(),
+                                Text('$totalDamagedMedicine'),
                               ],
                             ),
                             Row(
                               children: [
                                 Text(
-                                  'TOTAL PRICE OF DAMAGE MEDICINE',
+                                  'TOTAL PRICE OF DAMAGE MEDICINE:  ',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
+                                Spacer(),
                                 Icon(
                                   Icons.attach_money,
                                   color: Colors.blue,
                                 ),
+                                Text('$priceOfDamageMedicine'),
                               ],
                             ),
                           ],
@@ -241,43 +254,41 @@ class Dashboard extends StatelessWidget {
                 ),
                 Container(
                   height: size.height * 0.2,
-                  child: Flexible(
-                    child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('notice')
-                          .snapshots(),
-                      builder: (_, snapshot) {
-                        if (!snapshot.hasData) {
-                          return Center(child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
+                  child: StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection('notice')
+                        .snapshots(),
+                    builder: (_, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Something Went Wrong!!'),
+                        );
+                      } else {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return Center(
-                            child: Text('Something Went Wrong!!'),
-                          );
-                        } else {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(
-                              child: Text('No Notice Available'),
-                            );
-                          }
-                          return ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: snapshot.data.documents.length,
-                            itemBuilder: (context, index) {
-                              DocumentSnapshot notice =
-                                  snapshot.data.documents[index];
-                              NoticeModel noticeModel =
-                                  NoticeModel.fromJson(notice.data());
-                              return DashboardNoticeBox(
-                                subject: noticeModel.subject,
-                                description: noticeModel.description,
-                              );
-                            },
+                            child: Text('No Notice Available'),
                           );
                         }
-                      },
-                    ),
+                        return ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (context, index) {
+                            DocumentSnapshot notice =
+                                snapshot.data.documents[index];
+                            NoticeModel noticeModel =
+                                NoticeModel.fromJson(notice.data());
+                            return DashboardNoticeBox(
+                              subject: noticeModel.subject,
+                              description: noticeModel.description,
+                            );
+                          },
+                        );
+                      }
+                    },
                   ),
                 ),
               ],

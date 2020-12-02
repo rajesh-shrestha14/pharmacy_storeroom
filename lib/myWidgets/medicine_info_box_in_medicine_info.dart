@@ -145,7 +145,61 @@ class MedicineInfoBoxInMedicineInfo extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: size.height * 0.03,
+                height: size.height * 0.01,
+              ),
+              Container(
+                width: size.width,
+                decoration:
+                    BoxDecoration(border: Border.all(color: Colors.blue)),
+                padding: EdgeInsets.symmetric(
+                    horizontal: size.width * 0.02,
+                    vertical: size.height * 0.01),
+                child: Column(
+                  children: [
+                    Text(
+                      'Supplier Name: ',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      medicine.mSupplier,
+                      style: TextStyle(
+                          //fontWeight: FontWeight.bold,
+                          color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: size.height * 0.01,
+              ),
+              Container(
+                width: size.width,
+                decoration:
+                    BoxDecoration(border: Border.all(color: Colors.blue)),
+                padding: EdgeInsets.symmetric(
+                    horizontal: size.width * 0.02,
+                    vertical: size.height * 0.01),
+                child: Column(
+                  children: [
+                    Text(
+                      'Supplier Contact: ',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      medicine.mSuppContact,
+                      style: TextStyle(
+                          //fontWeight: FontWeight.bold,
+                          color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: size.height * 0.01,
               ),
               Row(
                 children: [
@@ -169,10 +223,6 @@ class MedicineInfoBoxInMedicineInfo extends StatelessWidget {
                       ),
                     ),
                   ),
-                ],
-              ),
-              Row(
-                children: [
                   Expanded(
                     child: Padding(
                       padding:
@@ -185,12 +235,18 @@ class MedicineInfoBoxInMedicineInfo extends StatelessWidget {
                   ),
                 ],
               ),
+              Row(
+                children: [],
+              ),
+              Row(
+                children: [],
+              ),
             ],
           ),
         ),
         Positioned(
           left: size.width * 0.6,
-          bottom: size.height * 0.36,
+          bottom: size.height * 0.46,
           child: IconButton(
             onPressed: () {
               final DocumentReference docRef = FirebaseFirestore.instance
@@ -206,7 +262,7 @@ class MedicineInfoBoxInMedicineInfo extends StatelessWidget {
         ),
         Positioned(
           right: size.width * 0.6,
-          bottom: size.height * 0.36,
+          bottom: size.height * 0.47,
           child: IconButton(
             onPressed: () {
               final DocumentReference docRef = FirebaseFirestore.instance

@@ -9,6 +9,7 @@ import 'package:pharmacy_storeroom/Services/table_builder.dart';
 import 'package:pharmacy_storeroom/myWidgets/drawer.dart';
 import 'package:pharmacy_storeroom/myWidgets/dropdown_menu.dart';
 import 'package:pharmacy_storeroom/myWidgets/medicine_info_box_in_added_medicine.dart';
+import 'package:pharmacy_storeroom/myWidgets/medicine_info_box_in_medicine_info.dart';
 
 //import 'dart:core';
 class AddedMedicine extends StatefulWidget {
@@ -96,7 +97,7 @@ class _AddedMedicineState extends State<AddedMedicine> {
                                 DocumentSnapshot medicine =
                                     snapshot.data.documents[index];
                                 print(medicine.toString());
-                                return MedicineInfoBoxInAddedMedicine(
+                                return MedicineInfoBoxInMedicineInfo(
                                   medicine:
                                       MedicineModel.fromJason(medicine.data()),
                                 );

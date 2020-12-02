@@ -69,4 +69,17 @@ class AuthService {
     await pref.setString('userId', currentUserId);
     await pref.setString('accountType', null);
   }
+
+  Future<void> changeCurrentUsersPassword(String password) async {
+    //Create an instance of the current user.
+    User user = await FirebaseAuth.instance.currentUser;
+
+    //Pass in the password to updatePassword.
+    user.updatePassword(password).then((_) {
+      print("Your password changed Succesfully ");
+    }).catchError((err) {
+      print("You can't change the Password" + err.toString());
+      //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
+    });
+  }
 }

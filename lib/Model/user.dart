@@ -51,9 +51,7 @@ class AppUser {
     position = user['position'];
     phoneNumber = user['phoneNumber'];
     imageURL = user['imageURL'];
-    username = user['userType'];
-    userType = user['uId'];
-    createdAt = user['createdAt'];
-    updatedAt = user['updateAt'];
+    username = user['username'];
+    userType = user['userType'];
   }
 }
